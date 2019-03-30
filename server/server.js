@@ -48,7 +48,6 @@ app.post('/initial', function (req, res) {
         },
         headers:
         {
-            'Postman-Token': '51e395ed-06ca-4194-86fb-27ffd725e848',
             'cache-control': 'no-cache'
         }
     };
