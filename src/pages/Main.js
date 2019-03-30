@@ -60,13 +60,32 @@ export class Main extends Component {
                 this.setState({call: newData, sentiment: data.sentiment * 100, language: data.language, source: data.source}, function(){this.forceUpdate()});
             });
 
+            socket.on('success', data => {
+                alert('Conversation saved successfully!');
+                window.location.href = '/history/' + data;
+            });
+
+            socket.on('error', data => {
+                alert('Error: Conversation could not be saved');
+                console.log('Error data:');
+                console.log(data);
+            });
+
             this.setState({socket: socket});
 
         });
     }
 
     saveConversation() {
-        
+        var socket = this.state.socket;
+
+        socket.emit('save', {
+            language: this.state.language,
+            source: this.state.source,
+            sentiment: this.state.sentiment,
+            call: this.state.call
+        });
+
     }
 
 
@@ -98,7 +117,7 @@ export class Main extends Component {
             buttonsHtml = (
                 <center>
                     <CancelButton onClick={() => window.location.href = '/'}>Discard Conversation</CancelButton>
-                    <SubmitButton>Save Conversation</SubmitButton>
+                    <SubmitButton onClick={this.saveConversation}>Save Conversation</SubmitButton>
                 </center>
             )
             detailsHtml = (<SectionHeader>Details</SectionHeader>);

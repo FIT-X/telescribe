@@ -19,7 +19,11 @@ const App = () => {
           )}/>
 
           <Route exact path="/history" render={(props) => (
-            <History />
+            <History {...props}/>
+          )}/>
+
+          <Route path="/history" render={(props) => (
+            <History {...props}/>
           )}/>
 
           <Route render={(props) => <NotFound /> } />

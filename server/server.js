@@ -19,6 +19,9 @@ app.use(function(req, res, next) {
 const buildPath = path.resolve(__dirname, '../build');
 app.use(express.static(buildPath));
 
+const savePath = path.resolve(__dirname, '../server/saved');
+app.use(express.static(savePath));
+
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
@@ -74,15 +77,63 @@ app.post('/text', function(req, res) {
     res.status(200).send('ok');
 });
 
+app.get('/historylist', function(req, res) {
+
+    fs.readdir(savePath, (err, files) => {
+        if (err) {
+            console.log(err);
+            res.status(404).send(err);
+        } else {
+            for (var i in files) {
+                files[i] = files[i].replace(/\.txt/g, '')
+            }
+            res.status(200).json(files);
+        }
+    });
+
+});
+
+app.get('/call/:file', function(req, res) {
+    var file = savePath + '/' + req.params.file + '.txt';
+    
+    fs.readFile(file, 'utf8', function(err, data) {
+        if (err) {
+            console.log(err);
+            res.status(404).send(err);
+        } else {
+            res.status(200).json(JSON.parse(data));
+        }
+    });
+
+});
+
 io.on('connection', client => {
     console.log('Client connected');
     clients.push(client);
 
-    client.on('disconnect', () => {
-        //write currentCall to a text file
-        var fileName = moment().format('MMMM Do YYYY, h:mm:ss a');
+    client.on('save', (data) => {
 
-        currentCall = [];
+        //How to stop saving the same conversation twice?
+
+        var date = moment().format('MMMM Do YYYY h:mm:ss a').replace(/\s/g, '-');
+        var fileName = savePath + '/' + date + '.txt';
+
+        console.log('Saving data:')
+        console.log(data)
+
+        fs.writeFile(fileName, JSON.stringify(data), function(err) {
+            if (err) {
+                console.log(err);
+                client.emit('error', err);
+            } else {
+                console.log('Saved successfully: ' + date);
+                client.emit('success', date);
+            }
+        });
+    });
+
+    client.on('disconnect', () => {
+        //remove client from clients array
         console.log('Client disconnected')
     });
     
