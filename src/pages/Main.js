@@ -67,13 +67,7 @@ export class Main extends Component {
 
     render() {
         var call = this.state.call;
-        var callString = '';
 
-        for (var i in call) {
-            callString = callString + call[i] + '\n'
-        }
-
-        
 
         return (
             <MainPlate title="Current Transcription" subTitle="View current call transcription">
