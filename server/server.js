@@ -1,6 +1,7 @@
 const server_port = 9600;
 
 const fs = require('fs');
+const path = require('path');
 
 const express = require('express');
 const app = express();
@@ -14,8 +15,8 @@ app.use(function(req, res, next) {
     next();
 });
 
-const downloadPath = './server/temp';
-app.use(express.static(downloadPath));
+const buildPath = path.resolve(__dirname, '../build');
+app.use(express.static(buildPath));
 
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
