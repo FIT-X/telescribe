@@ -19,6 +19,7 @@ export class Main extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.connectSocket = this.connectSocket.bind(this);
+        this.saveConversation = this.saveConversation.bind(this);
     }
 
 
@@ -62,8 +63,10 @@ export class Main extends Component {
             this.setState({socket: socket});
 
         });
-        
+    }
 
+    saveConversation() {
+        
     }
 
 
@@ -94,7 +97,7 @@ export class Main extends Component {
         if (call.length !== 0) {
             buttonsHtml = (
                 <center>
-                    <CancelButton>Discard Conversation</CancelButton>
+                    <CancelButton onClick={() => window.location.href = '/'}>Discard Conversation</CancelButton>
                     <SubmitButton>Save Conversation</SubmitButton>
                 </center>
             )

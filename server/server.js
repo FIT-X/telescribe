@@ -29,6 +29,10 @@ var currentCall = [];
 
 //if client connects and there is a session active send the text
 
+app.post('/initial', function(req, res) {
+
+});
+
 app.post('/text', function(req, res) {
 
     /*
