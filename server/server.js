@@ -27,11 +27,27 @@ var clients = [];
 
 var currentCall = [];
 
+//if client connects and there is a session active send the text
+
 app.post('/text', function(req, res) {
 
-    console.log(req.body.text);
+    /*
+    {
+        "original_text": "go dog go",
+        "sentiment": "0.8",
+        "original_language": "english",
+        "translated_text": "go dog go",
+        "source": "customer",
+        "reply_delay": "xx"
+    }
+    */
 
-    var text = req.body.text;
+    console.log(req.body);
+
+    var text = req.body.original_text;
+    var sentiment = req.body.sentiment;
+    var language = req.body.original_language;
+    var source = req.body.source;
     var time = '[' + moment().format('MMMM Do YYYY, h:mm:ss a') + ']';
 
     var textObject = {
@@ -42,7 +58,12 @@ app.post('/text', function(req, res) {
     currentCall.push(textObject);
 
     for (var i in clients) {
-        clients[i].emit('update', req.body.text);
+        clients[i].emit('update', {
+            text: text,
+            sentiment: sentiment,
+            language: language,
+            source: source
+        });
     }
 
     res.status(200).send('ok');
@@ -55,7 +76,7 @@ io.on('connection', client => {
     client.on('disconnect', () => {
         //write currentCall to a text file
         var fileName = moment().format('MMMM Do YYYY, h:mm:ss a');
-        
+
         currentCall = [];
         console.log('Client disconnected')
     });

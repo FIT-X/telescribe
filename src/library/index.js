@@ -6,6 +6,7 @@ import Checkbox from "./Checkbox/Checkbox";
 import SectionHeader from "./SectionHeader/SectionHeader";
 import SubmitButton from "./Buttons/SubmitButton";
 import CancelButton from "./Buttons/CancelButton";
+import Thermometer from "./Thermometer/Thermometer";
 
 export { 
     Header,
@@ -15,5 +16,6 @@ export {
     Checkbox,
     SectionHeader,
     SubmitButton,
-    CancelButton
+    CancelButton,
+    Thermometer
 };
