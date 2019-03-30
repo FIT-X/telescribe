@@ -18,20 +18,18 @@ const io = require('socket.io')(server);
 
 io.on('connection', client => {
     console.log('Client connected');
+
     io.emit('update', 'new data');
 
+    io.emit('update', 'more new data');
+
+    io.emit('update', 'too much data');
+
+
+
+    
+
     client.on('disconnect', () => { console.log('Client disconnected') });
-
-    client.on('event', data => {
-        console.log(data);
-
-        io.emit('update', data);
-
-
-
-
-        
-    });
     
 });
 

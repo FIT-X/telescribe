@@ -73,10 +73,14 @@ export class Main extends Component {
             callString = callString + call[i] + '\n'
         }
 
+        
+
         return (
             <MainPlate title="Current Transcription" subTitle="View current call transcription">
 
-                <p>{callString}</p>
+                {call.map(function(data, idx) {
+                    return <p key={idx}>{data.time + ' ' + data.text}</p>;
+                })}
                 
             </MainPlate>
         )
