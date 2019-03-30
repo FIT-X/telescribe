@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors')
 
+var request = require("request");
+
 const express = require('express');
 const app = express();
 
@@ -31,16 +33,34 @@ var currentCall = [];
 
 //if client connects and there is a session active send the text
 
-app.post('/initial', function(req, res) {
+app.post('/initial', function (req, res) {
     console.log(req.body);
-    
 
-    res.send(JSON.stringify({
-        "response":"thank you for notifying us"
-    }))
+    var options = {
+        method: 'GET',
+        url: 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d276c35b-be6f-466a-a4c5-cee2c2d76aa3',
+        qs:
+        {
+            verbose: 'true',
+            timezoneOffset: '-360',
+            'subscription-key': process.env.LUIS_SUB_KEY,
+            q: req.body.query
+        },
+        headers:
+        {
+            'cache-control': 'no-cache'
+        }
+    };
+
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+
+        console.log(body);
+        res.send(body);
+    });
 });
 
-app.post('/text', function(req, res) {
+app.post('/text', function (req, res) {
 
     /*
     {
@@ -80,7 +100,7 @@ app.post('/text', function(req, res) {
     res.status(200).send('ok');
 });
 
-app.get('/historylist', function(req, res) {
+app.get('/historylist', function (req, res) {
 
     fs.readdir(savePath, (err, files) => {
         if (err) {
@@ -99,10 +119,10 @@ app.get('/historylist', function(req, res) {
 
 });
 
-app.get('/call/:file', function(req, res) {
+app.get('/call/:file', function (req, res) {
     var file = savePath + '/' + req.params.file + '.txt';
-    
-    fs.readFile(file, 'utf8', function(err, data) {
+
+    fs.readFile(file, 'utf8', function (err, data) {
         if (err) {
             console.log(err);
             res.status(404).send(err);
@@ -127,7 +147,7 @@ io.on('connection', client => {
         console.log('Saving data:')
         console.log(data)
 
-        fs.writeFile(fileName, JSON.stringify(data), function(err) {
+        fs.writeFile(fileName, JSON.stringify(data), function (err) {
             if (err) {
                 console.log(err);
                 client.emit('error', err);
@@ -142,7 +162,7 @@ io.on('connection', client => {
         //remove client from clients array
         console.log('Client disconnected')
     });
-    
+
 });
 
 server.listen(server_port);
