@@ -34,7 +34,12 @@ var currentCall = [];
 //if client connects and there is a session active send the text
 
 app.post('/initial', function(req, res) {
+    console.log(req.body);
+    
 
+    res.send(JSON.stringify({
+        "response":"thank you for notifying us"
+    }))
 });
 
 app.post('/text', function(req, res) {
