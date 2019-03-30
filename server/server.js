@@ -36,7 +36,15 @@ var currentCall = [];
 app.post('/initial', function (req, res) {
     console.log(req.body);
 
-    var options = {
+    var responseBody = {
+        sentiment: '',
+        solution: ''
+    }
+
+    var errorCode = req.body.errorCode;
+    var query = req.body.query;
+    var language = '';
+    var luisOptions = {
         method: 'GET',
         url: 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/d276c35b-be6f-466a-a4c5-cee2c2d76aa3',
         qs:
@@ -44,7 +52,7 @@ app.post('/initial', function (req, res) {
             verbose: 'true',
             timezoneOffset: '-360',
             'subscription-key': process.env.LUIS_SUB_KEY,
-            q: req.body.query
+            q: query
         },
         headers:
         {
@@ -53,12 +61,77 @@ app.post('/initial', function (req, res) {
         }
     };
 
-    request(options, function (error, response, body) {
-        if (error) throw new Error(error);
+    var languageOptions = {
+        method: 'POST',
+        url: 'https://eastus.api.cognitive.microsoft.com/text/analytics/v2.0/languages',
+        headers:
+        {
+            'Postman-Token': '8fe9bfad-8753-4e50-8cc9-de834dd1de2b',
+            'cache-control': 'no-cache',
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': process.env.OCP_APIM_SUBSCRIPTION_KEY
+        },
+        body: { documents: [{ id: '1', text: req.body.query }] },
+        json: true
+    };
 
-        console.log(body);
-        res.send(body);
-    });
+    var translateOptions = {
+        method: 'POST',
+        url: 'https://api.cognitive.microsofttranslator.com/translate',
+        qs: { 'api-version': '3.0', to: 'en' },
+        headers:
+        {
+            'Postman-Token': '69263000-2792-4f75-97f4-1dfb2cc8ead0',
+            'cache-control': 'no-cache',
+            'Content-Type': 'application/json',
+            'Ocp-Apim-Subscription-Key': process.env.OCP_APIM_SUBSCRIPTION_KEY
+        },
+        body: [{ Text: query }],
+        json: true
+    };
+
+    request(languageOptions, function (error, response, body) {
+        if (error) {
+            throw new Error(error);
+        }
+
+        if (response.body.documents[0].detectedLanguages[0].iso6391Name != "en") {
+            console.log(response.body.documents[0].detectedLanguages[0].iso6391Name);
+
+             // translate req.body.query
+            request(translateOptions, function (error, response, body) {
+                if (error) {
+                    throw new Error(error);
+                }
+
+                query = response.body[0].translations[0].text;
+
+            })
+
+            
+
+        }
+        request(luisOptions, function (error, response, body) {
+            if (error) throw new Error(error);
+
+            console.log(body);
+            responseBody.sentiment = body.sentimentAnalysis.label;
+
+            if (errorCode.includes('REG99')) {
+                responseBody.solution = 'Enable Wi-Fi calling to use a Wi-Fi connection to make calls.';
+            }
+            else if (errorCode.includes('Message failed')) {
+                responseBody.solution = 'Restart your device.';
+            }
+            else if (errorCode.includes('tethering APN')) {
+                responseBody.solution = "From any Home screen, tap the Menu key. \nTap Settings. \nTap the Connections tab. \nTap More networks. \nTap Mobile networks. \nTap Access Point Names.\n If available, tap the T-Mobile US APN (the bullet point fills with green). If not available, tap the Menu key, and then tap New APN.\n Note: To reset your APN settings, tap the Menu key and then tap Reset to default.\n Verify and update the following settings for the Data APN:\n Name: T-Mobile US LTE\n APN: fast.t-mobile.com\n Proxy: <Not set>\n Port: <Not set>\n Username: <Not set>\n Password: <Not set>\n Server: <Not set>\n MMSC: http://mms.msg.eng.t-mobile.com/mms/wapenc\n MMS proxy: <Not set>\n MMS port: <Not set>\n MMS protocol: WAP 2.0\n MCC: 310\n MNC: 260\n Authentication type: <Not set>\n APN type: <Not set> OR Internet+MMS\n APN protocol: IPv4/IPv6\n APN roaming protocol: IPv4\n Enable/disable APN: <greyed out unless there are multiple APN's>\n Bearer: Unspecified\n Tap the Menu key.\n Tap Save.\n Tap the desired APN profile you want to use. The bullet point fills with green next to the APN profile.";
+            }
+            
+            console.log(responseBody);
+            res.send(responseBody);
+        });
+    })
 });
 
 app.post('/text', function (req, res) {
