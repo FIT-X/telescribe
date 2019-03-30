@@ -118,7 +118,7 @@ io.on('connection', client => {
 
         //How to stop saving the same conversation twice?
 
-        var date = moment().format('MMMM Do YYYY h:mm:ss a').replace(/\s/g, '-');
+        var date = moment().format('MMMM Do YYYY h-mm-ss a').replace(/\s/g, '-');
         var fileName = savePath + '/' + date + '.txt';
 
         console.log('Saving data:')

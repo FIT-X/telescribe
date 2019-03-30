@@ -43,7 +43,7 @@ export class History extends Component {
     getHistoryList() {
         axios.get(this.state.serverAddress + '/historylist')
         .then(response => {
-            console.log(response.data);
+            this.setState({historyList: response.data}, function(){this.forceUpdate()});
         })
         .catch(error => {
             console.log(error);
@@ -54,6 +54,7 @@ export class History extends Component {
         axios.get(this.state.serverAddress + '/call/' + this.state.location)
         .then(response => {
             console.log(response.data);
+            this.setState({call: response.data}, function(){this.forceUpdate()});
         })
         .catch(error => {
             console.log(error);
@@ -63,7 +64,7 @@ export class History extends Component {
 
     render() {
         var location = this.state.location;
-        var history = this.state.history;
+        var history = this.state.historyList;
         var call = this.state.call;
 
         if (location === '/history' || location === '/history/') {
@@ -72,9 +73,9 @@ export class History extends Component {
                 return (
                     <MainPlate title="History" subTitle="View saved calls">
 
-                        {history.map(function(data, idx) {
-                            return <p key={idx} style={{fontFamily: 'Roboto-Light'}}>{data}</p>;
-                        })}
+                        {history.map(call => 
+                            <a key={call} style={{fontFamily: 'Roboto-Light'}}> {call} </a>
+                        )} 
                     
                     </MainPlate>
                 )
