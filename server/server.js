@@ -6,6 +6,7 @@ const path = require('path');
 const cors = require('cors')
 
 var request = require("request");
+var morgan = require('morgan')
 
 const express = require('express');
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
 const buildPath = path.resolve(__dirname, '../build');
 app.use(express.static(buildPath));
@@ -34,6 +36,7 @@ var currentCall = [];
 //if client connects and there is a session active send the text
 
 app.post('/initial', function (req, res) {
+    console.log(req.headers["content-type"]);
     console.log(req.body);
 
     var responseBody = {
@@ -56,7 +59,6 @@ app.post('/initial', function (req, res) {
         },
         headers:
         {
-            'Postman-Token': '51e395ed-06ca-4194-86fb-27ffd725e848',
             'cache-control': 'no-cache'
         }
     };
@@ -181,10 +183,13 @@ app.get('/historylist', function (req, res) {
             console.log(err);
             res.status(404).send(err);
         } else {
+            var finalFiles = [];
             for (var i in files) {
-                files[i] = files[i].replace(/\.txt/g, '')
+                if (files[i].charAt(0) !== '.') {
+                    finalFiles.push(files[i].replace(/\.txt/g, ''));
+                }
             }
-            res.status(200).json(files);
+            res.status(200).json(finalFiles);
         }
     });
 
@@ -236,4 +241,11 @@ io.on('connection', client => {
 
 });
 
-server.listen(server_port);
+// app.get('*', function (req, res) {
+//     res.sendFile('index.html')
+// });
+app.use('*', express.static(buildPath));
+
+server.listen(server_port, ()=> {
+    console.log('server ready');
+});
