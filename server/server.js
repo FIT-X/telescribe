@@ -118,6 +118,13 @@ app.post('/initial', function (req, res) {
             if (error) throw new Error(error);
 
             console.log(body);
+            try {
+                body = JSON.parse(body)
+            }
+            catch (e) {
+                console.log(e);
+                console.log("Failed to parse")
+            }
             responseBody.sentiment = body.sentimentAnalysis.label;
 
             if (errorCode.includes('REG99')) {
