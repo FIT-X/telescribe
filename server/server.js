@@ -3,6 +3,7 @@ const server_port = process.env.PORT || 9600;
 
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors')
 
 const express = require('express');
 const app = express();
@@ -11,10 +12,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-});
+app.use(cors());
 
 const buildPath = path.resolve(__dirname, '../build');
 app.use(express.static(buildPath));
