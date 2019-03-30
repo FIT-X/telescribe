@@ -6,6 +6,7 @@ const path = require('path');
 const cors = require('cors')
 
 var request = require("request");
+var morgan = require('morgan')
 
 const express = require('express');
 const app = express();
@@ -15,6 +16,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cors());
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'));
 
 const buildPath = path.resolve(__dirname, '../build');
 app.use(express.static(buildPath));
@@ -34,6 +36,7 @@ var currentCall = [];
 //if client connects and there is a session active send the text
 
 app.post('/initial', function (req, res) {
+    console.log(req.headers["content-type"]);
     console.log(req.body);
 
     var options = {
