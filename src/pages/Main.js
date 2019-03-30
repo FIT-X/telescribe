@@ -14,7 +14,9 @@ export class Main extends Component {
             call: [],
             sentiment: 0,
             language: '',
-            source: ''
+            source: '',
+            oldTime: 0,
+            elapsedTime: 0
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -57,7 +59,15 @@ export class Main extends Component {
                 const newData = this.state.call
                 newData.push(textObject)
 
-                this.setState({call: newData, sentiment: data.sentiment * 100, language: data.language, source: data.source}, function(){this.forceUpdate()});
+                var currentTime = (new Date).getTime();
+                var oldTime = this.state.oldTime;
+                var elapsedTime = 0;
+
+                if (oldTime > 0) {
+                    elapsedTime = currentTime - oldTime;
+                }
+
+                this.setState({call: newData, sentiment: data.sentiment * 100, language: data.language, source: data.source, oldTime: currentTime, elapsedTime: elapsedTime}, function(){this.forceUpdate()});
             });
 
             socket.on('success', data => {
@@ -94,6 +104,7 @@ export class Main extends Component {
         var sentiment = this.state.sentiment;
         var language = this.state.language;
         var source = this.state.source;
+        var elapsedTime = this.state.elapsedTime;
 
         var sentimentHtml = null;
         if (sentiment > 0) {
@@ -108,6 +119,11 @@ export class Main extends Component {
         var sourceHtml = null;
         if (source !== '') {
             sourceHtml = (<p style={{textAlign: 'center', color: 'black', fontFamily: 'Roboto-Light'}}>Conversation Source: {source}</p>)
+        }
+
+        var elapsedTimeHtml = null;
+        if (elapsedTime !== 0) {
+            elapsedTimeHtml = (<p style={{textAlign: 'center', color: 'black', fontFamily: 'Roboto-Light'}}>Elapsed Time: {elapsedTime}</p>)
         }
 
         var buttonsHtml = null;
