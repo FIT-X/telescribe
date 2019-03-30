@@ -1,3 +1,4 @@
+require('dotenv').config();
 const server_port = process.env.PORT || 9600;
 
 const fs = require('fs');
