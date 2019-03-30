@@ -6,6 +6,8 @@ import { MainPlate, Thermometer, SectionHeader, SubmitButton } from "../library"
 export class History extends Component {
     constructor(props) {
         super(props);
+
+        console.log(props.location.pathname)
     
         this.state = {
             location: props.location.pathname.replace(/\/history\//g, ''),
@@ -33,7 +35,9 @@ export class History extends Component {
     componentDidMount() {
         var location = this.state.location;
 
-        if (location === '/history' || location === '/history/') {
+        console.log(window.location.pathname)
+
+        if (window.location.pathname === '/history' || window.location.pathname === '/history/') {
             this.getHistoryList();
         } else {
             this.getCall();
@@ -43,6 +47,7 @@ export class History extends Component {
     getHistoryList() {
         axios.get(this.state.serverAddress + '/historylist')
         .then(response => {
+            console.log(response.data)
             this.setState({historyList: response.data}, function(){this.forceUpdate()});
         })
         .catch(error => {
@@ -67,7 +72,7 @@ export class History extends Component {
         var history = this.state.historyList;
         var callData = this.state.call;
 
-        if (location === '/history' || location === '/history/') {
+        if (window.location.pathname === '/history' || window.location.pathname === '/history/') {
             if (history !== null) {
         
                 return (

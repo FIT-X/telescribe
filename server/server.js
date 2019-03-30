@@ -168,4 +168,11 @@ io.on('connection', client => {
 
 });
 
-server.listen(server_port);
+// app.get('*', function (req, res) {
+//     res.sendFile('index.html')
+// });
+app.use('*', express.static(buildPath));
+
+server.listen(server_port, ()=> {
+    console.log('server ready');
+});
