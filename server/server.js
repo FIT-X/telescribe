@@ -87,10 +87,13 @@ app.get('/historylist', function(req, res) {
             console.log(err);
             res.status(404).send(err);
         } else {
+            var finalFiles = [];
             for (var i in files) {
-                files[i] = files[i].replace(/\.txt/g, '')
+                if (files[i].charAt(0) !== '.') {
+                    finalFiles.push(files[i].replace(/\.txt/g, ''));
+                }
             }
-            res.status(200).json(files);
+            res.status(200).json(finalFiles);
         }
     });
 
