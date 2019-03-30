@@ -3,6 +3,7 @@ const server_port = process.env.PORT || 9600;
 
 const fs = require('fs');
 const path = require('path');
+const cors = require('cors')
 
 var request = require("request");
 
@@ -13,10 +14,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-});
+app.use(cors());
 
 const buildPath = path.resolve(__dirname, '../build');
 app.use(express.static(buildPath));
@@ -141,7 +139,7 @@ io.on('connection', client => {
 
         //How to stop saving the same conversation twice?
 
-        var date = moment().format('MMMM Do YYYY h:mm:ss a').replace(/\s/g, '-');
+        var date = moment().format('MMMM Do YYYY h-mm-ss a').replace(/\s/g, '-');
         var fileName = savePath + '/' + date + '.txt';
 
         console.log('Saving data:')

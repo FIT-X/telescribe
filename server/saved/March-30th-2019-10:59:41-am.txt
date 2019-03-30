@@ -1,1 +1,0 @@
-{"language":"english","source":"customer","sentiment":60,"call":[{"text":"Here is some more text! Even more!","time":"[March 30th 2019, 10:59:38 am]"}]}
