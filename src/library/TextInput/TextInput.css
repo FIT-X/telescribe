@@ -1,0 +1,43 @@
+.form-input {
+  height: 46px;
+  display: block;
+  font-size: 16px;
+  font-weight: 300;
+  width: 100%;
+  border: 1px solid #dddddd;
+  background-color: #ffffff;
+  padding: 0 20px;
+  outline: none;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.form-input-label {
+  display: inline-block;
+  width: auto;
+  height: 22px;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  color: #323333;
+  margin-bottom: 0;
+  padding: 4px 0;
+}
+
+.form-input-holder {
+  margin-bottom: 15px;
+}
+
+.form-input-help-text {
+  margin-top: 3px;
+  margin-bottom: 0;
+  margin-left: 10px;
+  font-family: sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+  color: red;
+}

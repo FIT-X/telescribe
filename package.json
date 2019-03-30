@@ -1,0 +1,26 @@
+{
+  "name": "telescribe",
+  "version": "0.1.0",
+  "devDependencies": {
+    "react-scripts": "0.8.5"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "moment": "^2.24.0",
+    "react": "^16.1.1",
+    "react-dom": "^16.1.1",
+    "react-router-dom": "^5.0.0",
+    "socket.io": "^2.2.0",
+    "socket.io-client": "^2.2.0"
+  },
+  "homepage": "./",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node ./server/server.js & react-scripts start",
+    "start-react": "react-scripts start",
+    "start-server": "node ./server/server.js",
+    "build": "react-scripts build",
+    "dev": "nf start -p 3000",
+    "stop": "killall node"
+  }
+}
