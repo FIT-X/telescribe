@@ -106,8 +106,15 @@ app.post('/initial', function (req, res) {
                 if (error) {
                     throw new Error(error);
                 }
-
-                query = response.body[0].translations[0].text;
+                console.log(body);
+                try {
+                    body = JSON.parse(body)
+                }
+                catch (e) {
+                    console.log(e);
+                    console.log("Failed to parse")
+                }
+                query = body[0].translations[0].text;
 
             })
 
