@@ -87,7 +87,7 @@ app.post('/initial', function (req, res) {
             'Postman-Token': '69263000-2792-4f75-97f4-1dfb2cc8ead0',
             'cache-control': 'no-cache',
             'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': process.env.OCP_APIM_SUBSCRIPTION_KEY
+            'Ocp-Apim-Subscription-Key': process.env.OCP_APIM_TRANSLATION_KEY
         },
         body: [{ Text: query }],
         json: true
