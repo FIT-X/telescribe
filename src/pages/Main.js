@@ -41,7 +41,7 @@ export class Main extends Component {
             socket.on('update', data => {
 
                 var text = data;
-                var time = moment().format('MMMM Do YYYY, h:mm:ss a');
+                var time = '[' + moment().format('MMMM Do YYYY, h:mm:ss a') + ']';
 
                 var textObject = {
                     text: text,
@@ -52,7 +52,6 @@ export class Main extends Component {
 
                 const newData = this.state.call
                 newData.push(textObject)
-                console.log(newData)
 
                 this.setState({call: newData}, function(){this.forceUpdate()});
             });
