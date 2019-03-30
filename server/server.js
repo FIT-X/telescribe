@@ -98,6 +98,7 @@ app.post('/initial', function (req, res) {
             throw new Error(error);
         }
 
+        language = response.body.documents[0].detectedLanguages[0].language;
         if (response.body.documents[0].detectedLanguages[0].iso6391Name != "en") {
             console.log(response.body.documents[0].detectedLanguages[0].iso6391Name);
 
@@ -142,6 +143,15 @@ app.post('/initial', function (req, res) {
             }
             else if (errorCode.includes('tethering APN')) {
                 responseBody.solution = "From any Home screen, tap the Menu key. \nTap Settings. \nTap the Connections tab. \nTap More networks. \nTap Mobile networks. \nTap Access Point Names.\n If available, tap the T-Mobile US APN (the bullet point fills with green). If not available, tap the Menu key, and then tap New APN.\n Note: To reset your APN settings, tap the Menu key and then tap Reset to default.\n Verify and update the following settings for the Data APN:\n Name: T-Mobile US LTE\n APN: fast.t-mobile.com\n Proxy: <Not set>\n Port: <Not set>\n Username: <Not set>\n Password: <Not set>\n Server: <Not set>\n MMSC: http://mms.msg.eng.t-mobile.com/mms/wapenc\n MMS proxy: <Not set>\n MMS port: <Not set>\n MMS protocol: WAP 2.0\n MCC: 310\n MNC: 260\n Authentication type: <Not set>\n APN type: <Not set> OR Internet+MMS\n APN protocol: IPv4/IPv6\n APN roaming protocol: IPv4\n Enable/disable APN: <greyed out unless there are multiple APN's>\n Bearer: Unspecified\n Tap the Menu key.\n Tap Save.\n Tap the desired APN profile you want to use. The bullet point fills with green next to the APN profile.";
+            }
+
+            for (var i in clients) {
+                clients[i].emit('update', {
+                    text: query,
+                    sentiment: responseBody.sentiment,
+                    language: language,
+                    source: 'app'
+                });
             }
             
             console.log(responseBody);
