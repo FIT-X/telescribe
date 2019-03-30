@@ -9,7 +9,7 @@ export class Main extends Component {
         super(props);
     
         this.state = {
-            socketAddress: 'http://localhost:9600',
+            socketAddress: process.env.REACT_APP_WS_HOST || 'http://localhost:9600',
             socket: null,
             call: []
         }
