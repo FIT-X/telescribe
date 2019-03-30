@@ -97,17 +97,20 @@ IF /I "%IN_PLACE_DEPLOYMENT%" NEQ "1" (
 :: 2. Select node version
 call :SelectNodeVersion
 
-:: 3. Install npm packages
+:: 3. Install Yarn
+echo Verifying Yarn Install.
+call :ExecuteCmd !NPM_CMD! install yarn -g
+
+:: 4. Install Yarn packages
+echo Installing Yarn Packages.
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
-  echo "Installing dependencies"
-  call :ExecuteCmd !NPM_CMD! install
+  call :ExecuteCmd yarn install
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
-  echo "Installing dependencies complete"
 )
 
-:: 4. Build app
+:: 5. Build app
 IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
   pushd "%DEPLOYMENT_TARGET%"
   echo "Building app"
