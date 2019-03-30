@@ -11,9 +11,7 @@ const Header = () => {
           <img className="logo-image" src={headerLogo} alt="" />
         </a>
       </div>
-      <div className="nav-header-title">
-        <a href="/" className="nav-header-title-link">TeleScribe</a>
-      </div>
+      
       <div className="nav-header-links">
         <ul>
           <li><button onClick={() => window.location.href = '/history'}>Call History</button></li>

@@ -21,13 +21,30 @@ app.use(express.static(buildPath));
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
 
+const moment = require('moment');
+
 var clients = [];
 
+var currentCall = [];
+
 app.post('/text', function(req, res) {
+
     console.log(req.body.text);
+
+    var text = req.body.text;
+    var time = '[' + moment().format('MMMM Do YYYY, h:mm:ss a') + ']';
+
+    var textObject = {
+        text: text,
+        time: time
+    }
+
+    currentCall.push(textObject);
+
     for (var i in clients) {
         clients[i].emit('update', req.body.text);
     }
+
     res.status(200).send('ok');
 });
 
@@ -35,7 +52,13 @@ io.on('connection', client => {
     console.log('Client connected');
     clients.push(client);
 
-    client.on('disconnect', () => { console.log('Client disconnected') });
+    client.on('disconnect', () => {
+        //write currentCall to a text file
+        var fileName = moment().format('MMMM Do YYYY, h:mm:ss a');
+        
+        currentCall = [];
+        console.log('Client disconnected')
+    });
     
 });
 
